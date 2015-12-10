@@ -1,0 +1,43 @@
+package DNAMirror;
+import java.io.IOException;
+
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class StubMapper extends Mapper<Object, Text, Text, Text> {
+
+  @Override
+  public void map(Object key, Text value, Context context)
+      throws IOException, InterruptedException {
+    /*
+     * TODO implement
+     */
+	  String mapKey="";
+	  value = new Text(value.toString().replaceAll("[^ a-zA-Z0-9]",""));
+	  String[] words = value.toString().split("[ ]+");
+	  System.out.println("ddd");
+	  System.err.println("error");
+	  
+	  int iLength = words[1].length();
+	  char[] reverseStr = new char[iLength];
+	  
+	  if(words[1].charAt(0)>words[1].charAt(iLength-1))
+	  {
+		  //Reverse the DNA
+		  for(int i=0;i<iLength;i++)
+		  {
+			  reverseStr[i]= words[1].charAt(iLength-i-1);
+		  }
+		  mapKey=String.valueOf(reverseStr);
+	  }
+	  else
+	  {
+		  mapKey=words[1];
+	  }
+	  
+	  context.write(new Text(mapKey), new Text(words[0]));
+  }
+}
